@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router()
-const {addproduct,updateproduct,deleteproduct,viewproduct, viewproductid} = require('../controller/product_management');
+const {addproduct,updateproduct,deleteproduct,viewproduct, viewproductid} = require('../admincontroller/product_management');
 const upload = require('../middleware/upload')
 
 router.post('/admin/addproduct',upload.array('image',4),addproduct)

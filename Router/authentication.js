@@ -1,6 +1,5 @@
 const express = require ('express');
 const {signup,login} = require('../controller/authenticationlogic')
-
 const router = express.Router()
 
 //router given in the postman

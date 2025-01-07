@@ -8,11 +8,11 @@ const jwt = require('jsonwebtoken')
 const signup = async(req,res)=>{
     try {
             //get all data from body
-            const {name,email,password} = req.body
+            const {name,email,password,Mobile,Gender} = req.body
     
       
              //all the data should exists
-             if (!(name && email && password)) {
+             if (!(name && email && password && Mobile && Gender)) {
             res.status(400).send('all the feild are compulsory')
           }
          
@@ -29,6 +29,8 @@ const signup = async(req,res)=>{
             const user = await userschema.create({
               name,
               email,
+              Mobile,
+              Gender,
               password: encryptpassword
           })
 
@@ -79,7 +81,7 @@ const login = async (req,res) => {
         { 
             const token = jwt.sign(
                 {id: user._id,},
-                'shhhh',
+                process.env.JWT_secret_key,
                 {
                     expiresIn: "2h"
                 }
@@ -90,17 +92,17 @@ const login = async (req,res) => {
           //Admin signin
         if (user.role =='admin') {
           const token = jwt.sign(
-            {id: user._id,},
-            'shhhh',
+            {id: user._id},
+            process.env.JWT_secret_key,
             {
                 expiresIn: "2h"
-            }
+            } 
         );
             return res.status(200).send({message:"admin login successfully",
               token
             })
           }
-       
+        
 
             // cookie section
             const options = {
