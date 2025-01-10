@@ -2,7 +2,6 @@ const env = require('dotenv')
 const express = require ('express');
 const app = express();
 const db = require ('./DBconnect/DBconnect');
-// const cookieParser = require('cookie-parser');
 const router = require('./Router/authentication')
 const forget = require('./Router/forget')
 const reset = require('./Router/reset')
@@ -13,12 +12,13 @@ const category = require('./Router/category')
 const profile = require('./Router/profile')
 const wishlist = require('./Router/wishlist')
 const cart = require('./Router/cart')
+const coupon = require('./Router/admincoupon')
+const order = require ('./Router/order')
 
 db()
 
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
-// app.use(cookieParser)
 app.use(router)
 app.use(forget)
 app.use(reset)
@@ -29,6 +29,8 @@ app.use(category)
 app.use(profile)
 app.use(wishlist)
 app.use(cart)
+app.use(coupon)
+app.use(order)
 
 env.config()
 const PORT = process.env.port
