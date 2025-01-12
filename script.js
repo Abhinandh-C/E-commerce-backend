@@ -14,6 +14,8 @@ const wishlist = require('./Router/wishlist')
 const cart = require('./Router/cart')
 const coupon = require('./Router/admincoupon')
 const order = require ('./Router/order')
+const banner = require('./Router/bannerroute')
+const dashboard = require('./Router/dash')
 
 db()
 
@@ -31,6 +33,8 @@ app.use(wishlist)
 app.use(cart)
 app.use(coupon)
 app.use(order)
+app.use(banner)
+app.use(dashboard)
 
 env.config()
 const PORT = process.env.port
