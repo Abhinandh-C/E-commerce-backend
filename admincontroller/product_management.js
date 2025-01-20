@@ -151,7 +151,7 @@ const viewproductid = async (req, res) => {
 
         //error message
     } catch (error) {
-        return res.status(400).json({ message: 'invalid command' })
+        return res.status(400).json({ message: 'invalid command',error:error.message })
 
     }
 
