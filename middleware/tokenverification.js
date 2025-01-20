@@ -1,26 +1,30 @@
 const jsonwebtoken = require('jsonwebtoken')
 
 
-function verifyToken (req,res,next){
+function verifyToken(req, res, next) {
+    //extract authorized header
     const authheader = req.header('Authorization')
 
-  
-    const token = authheader.split(' ') [1];
-    if(!token){return res.send('token not found')}
+    //extract token
+    const token = authheader.split(' ')[1];
 
+    //checking the token
+    if (!token) { return res.send('token not found') }
 
- jsonwebtoken.verify(token,process.env.JWT_secret_key,(err,decoder)=>{
-    if (err) {
-        return res.status(400).json({
-            message:"error in token verify"
-        })
+    //verify the token
+    jsonwebtoken.verify(token, process.env.JWT_secret_key, (err, decoder) => {
         
-    }
-    console.log(decoder);
-    
-    req.user = decoder
-    next()
-})
+        //error checking
+        if (err) {
+            return res.status(400).json({ message: "error in token verify" })
+
+        }
+        //attaching the user id in the decoder
+        req.user = decoder
+
+        //passing to the next middleware
+        next()
+    })
 
 }
 
