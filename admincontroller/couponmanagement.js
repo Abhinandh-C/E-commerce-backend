@@ -2,110 +2,130 @@ const couponschema = require('../model/couponschema')
 
 
 
-const createcoupon = async (req,res) => {
+const createcoupon = async (req, res) => {
     try {
         //getting from the body
         const {
             name,
             expiry,
             discount
-         } = req.body;
-         
+        } = req.body;
 
-         // check the feild
-         if (!name || !expiry || !discount) {
-            return res.status(400).json({
-                message: 'require all the feilds'
-            })
-            
-         }
 
-         //checking the coupon exiting 
-         const existingCoupon = await couponschema.findOne({ name });
-        if (existingCoupon) {
-            return res.status(400).json({
-                message: 'A coupon with this name already exists.',
-            });
+        // check the feild
+        if (!name || !expiry || !discount) {
+            return res.status(400).json({message: 'require all the feilds'})
+
         }
 
-         const model = await couponschema({
+        //checking the coupon exiting 
+        const existingCoupon = await couponschema.findOne({ name });
+
+        //checking for existing
+        if (existingCoupon) {
+            return res.status(400).json({ message: 'A coupon with this name already exists.'});
+        }
+
+        //creating a new model
+        const model = await couponschema({
             name,
             expiry,
             discount
-         });
+        });
 
-         await model.save()
-        return res.status(200).json({message:'coupon has been created'})
+        //saving the new model
+        await model.save()
 
-    } catch (error) {
+        //success message
+        return res.status(200).json({ message: 'coupon has been created' })
+
         //error message
-        return res.status(400).json({message: 'error in create coupon',error:error.message
-        })
+    } catch (error) {
+           return res.status(400).json({  message: 'error in create coupon', error: error.message })
     }
-    
+
 }
 
-const viewcoupon = async (req,res) => {
-     try {
-            const coupon = await couponschema.find({})
-            if (!coupon) {
-                return res.status(404).json({message: 'coupon not found'});
-            }
-            return res.status(200).json({message: 'All the coupons are here',coupon});
-            
-        } catch (error) {
-            return res.status(400).json({message: 'invalid command'})
-            
-        }
-}
 
-const updatecoupon = async (req,res) => {
+
+
+const viewcoupon = async (req, res) => {
     try {
+        //finding from schema
+        const coupon = await couponschema.find({})
+
+        //checking the coupon
+        if (!coupon) {
+            return res.status(404).json({ message: 'coupon not found' });
+        }
+        return res.status(200).json({ message: 'All the coupons are here', coupon });
+
+        //error message
+    } catch (error) {
+        return res.status(400).json({ message: 'invalid command' })
+    }
+}
+
+
+
+const updatecoupon = async (req, res) => {
+    try {
+        //taking from params
         const couponid = req.params.id;
+
+        //getting from the body
         const update = req.body;
 
+        //checking the coupon
         if (!couponid) {
-            return res.status(404).json({message: "coupon id is required"})
+            return res.status(404).json({ message: "coupon id is required" })
         }
 
-        const updatecoupon = await couponschema.findByIdAndUpdate(couponid,update);
+        //find from schema and updateing
+        const updatecoupon = await couponschema.findByIdAndUpdate(couponid, update);
+
+         //checking the function
         if (!updatecoupon) {
-            return res.status(400).json({message: "cannot update the coupon"});
+            return res.status(400).json({ message: "cannot update the coupon" });
         }
-        res.status(200).json({message: "updated successfully"});
+        res.status(200).json({ message: "updated successfully" });
 
+        //error message
+    } catch (error) {
+        res.status(400).json({ message: "invalid product" })
 
-        
-         } catch (error) {
-       res.status(400).json({message: "invalid product"})
-        
     }
-    
+
 }
 
 
-const deletecoupon = async (req,res) => {
-    
+const deletecoupon = async (req, res) => {
+
     try {
+        //taking from params
         const couponid = req.params.id;
 
+        //checking the coupon
         if (!couponid) {
-            return res.status(404).json({message: "coupon id is required"})
+            return res.status(404).json({ message: "coupon id is required" })
         }
-        
-        const deletecoupon = await couponschema.findByIdAndDelete(couponid)
-        if (!deletecoupon) {
-            return res.status(400).json({message: 'coupon cannot been deleted'});
-        }
-        return res.status(200).json({message: 'coupon deleted successfully'});
 
-        
+        //find from schema and delete
+        const deletecoupon = await couponschema.findByIdAndDelete(couponid)
+
+        //checking the function
+        if (!deletecoupon) {
+            return res.status(400).json({ message: 'coupon cannot been deleted' });
+        }
+        return res.status(200).json({ message: 'coupon deleted successfully' });
+
+        //error message
     } catch (error) {
-        return res.status(404).json({message: 'invalid command'})
-        
+        return res.status(404).json({ message: 'invalid command' })
+
     }
-    
+
 }
 
-module.exports ={ createcoupon,viewcoupon,updatecoupon,deletecoupon}
+module.exports = { createcoupon, viewcoupon, updatecoupon, deletecoupon }
 
