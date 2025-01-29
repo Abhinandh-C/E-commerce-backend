@@ -1,13 +1,13 @@
 const orderschema = require('../model/orderschema');
 const productschema = require('../model/productschema');
 
-const recentorder = async (req,res) => {
+const recentorder = async (req, res) => {
     try {
-         //finding the recent orders
+        //finding the recent orders
         const order = await orderschema.find()
-        .sort({orderdate: -1})
-        .limit(5)
-    
+            .sort({ orderdate: -1 })
+            .limit(5)
+
 
         //checking the orders
         if (!recentorder || recentorder.length === 0) {
@@ -20,12 +20,12 @@ const recentorder = async (req,res) => {
             message: "Recent orders ",
             order
         });
-        
-        //success
-        } catch (error) {
-        return res.status(400).json({message:"invalid command",error:error.message})
-        }
-    
+
+        //error message
+    } catch (error) {
+        return res.status(400).json({ message: "invalid command", error: error.message })
+    }
+
 }
 
 const topSellingProducts = async (req, res) => {
@@ -38,21 +38,21 @@ const topSellingProducts = async (req, res) => {
             {
                 $group: {
                     _id: "$products.productid",
-                    totalQuantity: { $sum: "$products.quantity" }, 
+                    totalQuantity: { $sum: "$products.quantity" },
                 },
             },
             {
                 $sort: { totalQuantity: -1 },
             },
             {
-                $limit: 5, 
+                $limit: 5,
             },
             {
                 $lookup: {
                     from: "products",
-                    localField: "_id", 
-                    foreignField: "_id", 
-                    as: "productDetails", 
+                    localField: "_id",
+                    foreignField: "_id",
+                    as: "productDetails",
                 },
             },
         ]);
@@ -67,27 +67,27 @@ const topSellingProducts = async (req, res) => {
         // Successfull
         res.status(200).json({
             message: "Top-selling products fetched successfully",
-             topSellingProducts,
+            topSellingProducts,
         });
 
-       //error message 
-    } catch (error){
+        //error message 
+    } catch (error) {
         return res.status(400).json({
-            message: "invalid command",error:error.message
+            message: "invalid command", error: error.message
 
-    })
-}
+        })
+    }
 }
 
 
 const inventoryStatus = async (req, res) => {
     try {
-        
+        //finding from schema
         const Status = await productschema.find({}, {
-            _id: 1, 
-            product_name: 1, 
-            stock: 1, 
-            price: 1 
+            _id: 1,
+            product_name: 1,
+            stock: 1,
+            price: 1
         });
 
         //checking the data is available or not
@@ -104,7 +104,7 @@ const inventoryStatus = async (req, res) => {
         });
 
         //error message
-        } catch (error) {
+    } catch (error) {
         res.status(500).json({
             message: "Error fetching inventory status",
             error: error.message,
@@ -114,4 +114,4 @@ const inventoryStatus = async (req, res) => {
 
 
 
-module.exports = {recentorder,topSellingProducts,inventoryStatus}
+module.exports = { recentorder, topSellingProducts, inventoryStatus }
