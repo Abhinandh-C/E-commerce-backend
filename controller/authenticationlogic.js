@@ -58,60 +58,114 @@ const signup = async (req, res) => {
 }
 
 
+// const login = async (req, res) => {
+
+//   try {
+//     //get all data
+//     const { email, password } = req.body
+
+//     //validation
+//     if (!(email && password)) {
+//       res.status(400).send('send all data')
+//     }
+//     //find user in DB
+//     const user = await userschema.findOne({ email })
+
+//     //user was not exist
+//     if (!user) {
+//       res.status(404).send("user was not exist")
+//     }
+
+//     //match they password
+//     if (user && (await bcrypt.compare(password, user.password))) {
+//       const token = jwt.sign(
+//         { id: user._id, },
+//         process.env.JWT_secret_key,
+//         {
+//           expiresIn: "2h"
+//         }
+//       );
+//       user.token = token
+//       user.password = undefined
+
+//       //Admin signin
+//       if (user.role == 'admin') {
+//         const token = jwt.sign(
+//           { id: user._id },
+//           process.env.JWT_secret_key,
+//           {
+//             expiresIn: "2h"
+//           }
+//         );
+//         return res.status(200).send({
+//           message: "admin login successfully",
+//           token
+//         })
+//       }
+
+//       res.status(201).json(user)
+//     }
+
+//     //error message
+//   } catch (error) {
+//     console.log('error in login', error);
+//   }
+
+// }
 const login = async (req, res) => {
-
   try {
-    //get all data
-    const { email, password } = req.body
+    const { email, password } = req.body;
 
-    //validation
+    // Validate input
     if (!(email && password)) {
-      res.status(400).send('send all data')
+      return res.status(400).send('Please provide both email and password');
     }
-    //find user in DB
-    const user = await userschema.findOne({ email })
 
-    //user was not exist
+    // Find user in DB
+    const user = await userschema.findOne({ email });
+
     if (!user) {
-      res.status(404).send("user was not exist")
+      return res.status(404).send("User does not exist");
     }
 
-    //match they password
-    if (user && (await bcrypt.compare(password, user.password))) {
-      const token = jwt.sign(
-        { id: user._id, },
-        process.env.JWT_secret_key,
-        {
-          expiresIn: "2h"
-        }
-      );
-      user.token = token
-      user.password = undefined
-
-      //Admin signin
-      if (user.role == 'admin') {
-        const token = jwt.sign(
-          { id: user._id },
-          process.env.JWT_secret_key,
-          {
-            expiresIn: "2h"
-          }
-        );
-        return res.status(200).send({
-          message: "admin login successfully",
-          token
-        })
-      }
-
-      res.status(201).json(user)
+    // Check password
+    const isPasswordMatch = await bcrypt.compare(password, user.password);
+    if (!isPasswordMatch) {
+      return res.status(401).send("Invalid credentials");
     }
 
-    //error message
+    // Generate token
+    const token = jwt.sign(
+      { id: user._id },
+      process.env.JWT_secret_key,
+      { expiresIn: "2h" }
+    );
+
+    user.token = token;
+    user.password = undefined;
+
+    // If admin login
+    if (user.role === 'admin') {
+      return res.status(200).json({
+        message: "Admin login successful",
+        user,
+        token
+      });
+    }
+
+    // Normal user login
+    return res.status(200).json({
+      message: "User login successful",
+      user,
+      token
+    });
+
   } catch (error) {
-    console.log('error in login', error);
+    console.log('Error in login', error);
+    return res.status(500).send("Internal server error");
   }
+};
 
-}
 
 const logout = async (req, res) => {
   try {
