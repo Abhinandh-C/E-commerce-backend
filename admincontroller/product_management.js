@@ -4,54 +4,34 @@ const productschema = require('../model/productschema')
 
 const addproduct = async (req, res) => {
     try {
-        //get all data from body
-        const {
-            product_name,
-            description,
-            price,
-            category,
-            stock,
-            image
-        } = req.body
+      const { product_name, description, price, category, stock,rating } = req.body;
+  
+      const imagePaths = req.files ? req.files.map(file => `/upload/${file.filename}`) : [];
 
-        //creating new model
-        const productmodel = await productschema({
-            product_name,
-            description,
-            price,
-            category,
-            stock,
-            image
-        });
-
-        //multer function
-        if (req.file) {
-            productmodel.image = req.file.path
-
-        }
-
-        if (req.files) {
-            let file = [];
-            req.files.forEach((filename) => {
-                file.push(filename.path);
-            });
-            productmodel.image = file;
-
-
-        }
-
-        //saving the model
-        await productmodel.save()
-
-        //success message
-        return res.status(201).send({ message: `product added successfully ${productmodel}` })
-
-        //error message
+  
+      // Create new product
+      const product = new productschema({
+        product_name,
+        description,
+        price,
+        category,
+        stock,
+        rating,
+        image: imagePaths
+      });
+  
+      await product.save();
+  
+      return res.status(201).json({
+        message: 'Product added successfully',
+        product
+      });
+  
     } catch (error) {
-        return res.status(201).send({ message: 'invalid command' })
+      console.error('Error adding product:', error);
+      return res.status(500).json({ message: 'Failed to add product',error });
     }
-
-}
+  };
 
 
 
