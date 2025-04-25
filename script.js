@@ -16,10 +16,20 @@ const coupon = require('./Router/admincoupon')
 const order = require ('./Router/order')
 const banner = require('./Router/bannerroute')
 const dashboard = require('./Router/dash')
+const cors =require('cors')
+
 
 db()
-
 app.use(express.json())
+app.use(cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+    methods:['GET','POST','PUT','DELETE']
+}));
+
+
+app.use('/upload', express.static('public/upload'));
+
 app.use(express.urlencoded({extended:true}))
 app.use(router)
 app.use(forget)
@@ -35,6 +45,7 @@ app.use(coupon)
 app.use(order)
 app.use(banner)
 app.use(dashboard)
+
 
 env.config()
 const PORT = process.env.port
