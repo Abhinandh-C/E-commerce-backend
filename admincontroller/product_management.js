@@ -43,13 +43,15 @@ const updateproduct = async (req, res) => {
         //getting from the body
         const update = req.body;
 
+        
+        
         //checking the productId
         if (!productid) {
             return res.status(404).json({ message: "product id is required" })
         }
 
         //find from schema and update
-        const updateproduct = await productschema.findByIdAndUpdate(productid, update);
+        const updateproduct = await productschema.findByIdAndUpdate(productid,{$set:update},{new:true});
 
         //checking the condition
         if (!updateproduct) {
