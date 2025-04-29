@@ -6,7 +6,7 @@ const addressschema = mongoose.Schema ({
                type : mongoose.Schema.Types.ObjectId,
                ref : "user"
            },
-    FirstName : {
+    firstName : {
                 type : String,
                 require : true
     },
@@ -30,7 +30,7 @@ const addressschema = mongoose.Schema ({
             type : Number,
             require : true
     },
-    Country : {
+    country : {
             type : String,
             require : true
     }
