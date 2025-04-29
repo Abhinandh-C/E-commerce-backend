@@ -25,8 +25,10 @@ const viewallorder = async (req, res) => {
 
 
         //find the order
-        const orderdetails = await orderschema.find({})
-
+        const orderdetails = await orderschema.find()
+        .populate('address') // <-- Populates address details
+        .populate('products.productid') // optional: populate product info too
+        .exec();
         //check the order is been existing
         if (!orderdetails) {
             return res.status(404).json({ message: ' order is not found' })
