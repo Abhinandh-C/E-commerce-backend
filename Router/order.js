@@ -5,7 +5,7 @@ const {deleteorder,viewallorder,updatestatus} =require('../admincontroller/admin
 const verifyToken = require('../middleware/tokenverification')
 const blacklist = require('../middleware/blacklist')
 
-router.post('/placeanorder',verifyToken,blacklist,placeanorder)
+router.post('/placeanorder/:id',verifyToken,blacklist,placeanorder)
 router.delete('/deleteorder/:id',verifyToken,blacklist,deleteorder)
 router.put('/cancelorder/:id',verifyToken,blacklist,cancelorder)
 router.get('/vieworder/:id',verifyToken,blacklist,vieworder)
