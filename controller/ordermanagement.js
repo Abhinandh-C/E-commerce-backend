@@ -11,14 +11,23 @@ const placeanorder = async (req, res) => {
         //getting from body
         const { paymentMethod } = req.body;
 
+        //getting cartItem from id
+        const cartId =req.params.id
+
         //checking the user by the token id
         const userid = req.user.id;
 
         //finding the userid from schema
         const name = await userschema.findById(userid)
 
+
+        //checking the cart id from the schema
+        const cartid = await cartschema.findById(cartId)
+
         // checking the address
-        const address = await addressschema.findOne({ userid })
+        const address = await addressschema.findOne({ userid },{userid:0})
+        console.log(address);
+        
         if (!address) {
             return res.status(400).json({
                 message: 'need a valid address'
@@ -41,7 +50,7 @@ const placeanorder = async (req, res) => {
             userid,
             products: cart.products,
             Netamount: cart.Netamount,
-            addresses: address,
+            address: address,
             Status: "Pending",
             paymentMethod,
             paymentStatus: "Pending",
