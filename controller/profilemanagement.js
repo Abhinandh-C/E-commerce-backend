@@ -3,7 +3,7 @@ const addressschema = require('../model/address')
 const bcrypt = require('bcrypt')
 
 
-const updateprofile = async (req, res) => {
+const Createprofile = async (req, res) => {
     try {
         //fecting the user
         const userid = req.user.id
@@ -132,4 +132,4 @@ const changepassword = async (req, res) => {
 }
 
 
-module.exports = { viewuserprofile, deleteprofile, updateprofile, updateprofile, changepassword }
+module.exports = { viewuserprofile, deleteprofile, Createprofile, changepassword }
