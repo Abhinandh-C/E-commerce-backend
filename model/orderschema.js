@@ -33,7 +33,7 @@ const orderschema = mongoose.Schema({
                  },
     address : {
         type : mongoose.Schema.Types.ObjectId,
-        ref : "addresses"
+        ref : "address"
 
     },
     Status : {
