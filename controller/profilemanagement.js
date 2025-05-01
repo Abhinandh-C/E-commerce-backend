@@ -9,7 +9,7 @@ const Createprofile = async (req, res) => {
         const userid = req.user.id
 
         // getting from body
-        const { firstName, PhoneNumber, address, city, state, pincode, country } = req.body;
+        const { firstName,email, PhoneNumber, address, city, state, pincode, country } = req.body;
 
         //checking the phone number is valid or not
         if (PhoneNumber.length !== 10) {
@@ -18,7 +18,7 @@ const Createprofile = async (req, res) => {
         }
 
         //checking the data
-        if (!firstName || !PhoneNumber || !address || !city || !state || !pincode || !country) {
+        if (!firstName || !email || !PhoneNumber || !address || !city || !state || !pincode || !country) {
             return res.status(400).json({ message: 'require all the feilds' })
         }
 
@@ -29,6 +29,7 @@ const Createprofile = async (req, res) => {
         const Profile = await addressschema({
             userid,
             firstName,
+            email,
             PhoneNumber,
             address,
             city,
