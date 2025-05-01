@@ -10,6 +10,10 @@ const addressschema = mongoose.Schema ({
                 type : String,
                 require : true
     },
+    email:{
+        type: String,
+        require : true
+    },
     PhoneNumber : {
                 type : Number,
                 require : true
