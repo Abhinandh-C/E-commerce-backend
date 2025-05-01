@@ -65,24 +65,18 @@ const deleteuser = async (req, res) => {
 
 const blockuser = async (req, res) => {
     try {
-        //taking from params
-        const userid = req.params.id;
-
-        //find userID from schema and update to active false
-        await Schema.findByIdAndUpdate(userid, { active: false })
-
-        //checking the user
-        if (!user) {
-            return res.status(404).json({ message: "user was not found " })
-        }
-        return res.status(200).json({ message: "The user has been Blocked", user })
-
-        //error message
-    } catch (error) {
-        return res.status(400).json({ message: "invalid command" })
+      const user = await Schema.findById(req.params.id);
+      if (!user) return res.status(404).json({ message: "User not found" });
+  
+      user.active = !user.active;
+      await user.save();
+  
+      res.status(200).json({ message: "User status updated", active: user.active });
+    } catch (err) {
+      res.status(500).json({ message: "Server error" });
     }
-
-}
+  };
+  
 
 const viewblockuser = async (req, res) => {
     try {
