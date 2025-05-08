@@ -94,7 +94,7 @@ const viewcart = async (req, res) => {
         //success command
         return res.status(200).json({
             message: 'cart shown successfully',
-            cart: cart.products
+            cart: cart
         });
 
     } catch (error) {
@@ -105,21 +105,54 @@ const viewcart = async (req, res) => {
 
 const removefromcart = async (req, res) => {
     try {
-        //checking the user by the token id
         const userid = req.user.id;
-
-        //getting the product id
         const productId = req.params.id;
 
-        //find user's cart
-        const cart = await cartschema.findOneAndUpdate({ userid }, { $pull: { products: { productid: productId } } })
-        return res.status(200).json({ message: 'product removed from cart ' })
+        // Get the cart
+        const cart = await cartschema.findOne({ userid });
 
-        //error statement  
+        if (!cart) {
+            return res.status(404).json({ message: 'Cart not found' });
+        }
+
+        // Remove the product manually
+        cart.products = cart.products.filter(item => item.productid.toString() !== productId);
+
+        // Recalculate Netamount
+        cart.Netamount = cart.products.reduce((total, product) => total + product.totalamount, 0);
+
+        // Save changes
+        await cart.save();
+
+        return res.status(200).json({ message: 'Product removed from cart', cart });
     } catch (error) {
-        return res.status(400).json({ message: 'error', error })
+        return res.status(400).json({ message: 'Error removing product', error: error.message });
     }
-}
+};
+
+
+
+const removeAllCart = async (req, res) => {
+    try {
+        const userid = req.user.id;
+
+        const cart = await cartschema.findOne({ userid });
+
+        if (!cart) {
+            return res.status(404).json({ message: "Cart not found" });
+        }
+
+        // Clear the cart
+        cart.products = [];
+        cart.Netamount = 0;
+        await cart.save();
+
+        return res.status(200).json({ message: 'All items removed from cart' });
+    } catch (error) {
+        return res.status(400).json({ message: 'Error clearing cart', error: error.message });
+    }
+};
+
 
 const applycoupon = async (req, res) => {
     try {
@@ -235,4 +268,4 @@ const updatecartquantity = async (req, res) => {
 
 }
 
-module.exports = { addtocart, viewcart, removefromcart, updatecartquantity, applycoupon }
+module.exports = { addtocart, viewcart, removefromcart, updatecartquantity, applycoupon,removeAllCart }
