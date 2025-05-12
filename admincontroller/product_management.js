@@ -123,13 +123,13 @@ const viewproductid = async (req, res) => {
         const productid = req.params.id;
 
         //finding from schema
-        const products = await productschema.findById(productid)
+        const product = await productschema.findById(productid)
 
         //checking the condition
-        if (!products) {
+        if (!product) {
             return res.status(404).json({ message: 'product not found' });
         }
-        return res.status(200).json({ message: 'The products', products });
+        return res.status(200).json(product);
 
         //error message
     } catch (error) {
