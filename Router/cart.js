@@ -9,6 +9,6 @@ router.get('/viewcart',verifyToken,blacklist,viewcart)
 router.delete('/removefromcart/:id',verifyToken,blacklist,removefromcart)
 router.delete('/removeAllCart',verifyToken,blacklist,removeAllCart)
 router.put('/updatecart/:id',verifyToken,blacklist,updatecartquantity)
-router.post('/applycoupon/:id',verifyToken,blacklist,applycoupon)
+router.post('/applycoupon',verifyToken,blacklist,applycoupon)
 
 module.exports = router
