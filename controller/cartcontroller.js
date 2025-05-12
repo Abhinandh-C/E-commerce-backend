@@ -163,7 +163,8 @@ const applycoupon = async (req, res) => {
         const { name } = req.body
 
         //getting from product id
-        const productid = req.params.id
+        const { productid } = req.body;
+
 
         //finding userid from cartschema
         const cart = await cartschema.findOne({ userid })
@@ -204,8 +205,12 @@ const applycoupon = async (req, res) => {
         await cart.save()
 
         //success message
-        return res.status(200).json({ message: 'coupon appled succesfully'
-        })
+        return res.status(200).json({
+            message: 'Coupon applied successfully',
+            discountAmount,
+            newTotal: cart.Netamount
+          });
+          
         //error command
     } catch (error) {
         return res.status(500).json({ message: "internal server issue", error: error.message })
